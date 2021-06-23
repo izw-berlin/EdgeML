@@ -39,7 +39,7 @@ class Predictor:
             return False
         else:
             print("success")
-            return True
+            return True   
 
     def buildForLinux(self):
         print("Build...", end='')
@@ -57,9 +57,35 @@ class Predictor:
             print("success")
             return True
 
+    def buildForMingw(self):
+        '''
+        Build using makefile with mingw-compiler
+        if Common.gccPath is not None, add it to front of path for execution
+        '''
+        
+        my_env = os.environ.copy()
+        if (Common.gccPath is not None) and (Common.gccPath):
+            my_env['PATH'] = gccPath+';'+os.environ['PATH']
+            
+        args = ["mimg32-make.exe"]
+            
+        logFile = os.path.join(self.outputDir, "gccbuild.txt")
+        with open(logFile, 'w') as file:
+            process = subprocess.call(args, stdout=file, env=my_env)
+
+        if process == 1:
+            print("FAILED!!\n")
+            return False
+        else:
+            print("success")
+            return True   
+            
     def build(self):
         if Util.windows():
-            return self.buildForWindows()
+            if Common.mingw:
+                return self.buildForMingw()
+            else:
+                return self.buildForWindows()
         else:
             return self.buildForLinux()
 
@@ -102,9 +128,30 @@ class Predictor:
             acc = self.readStatsFile()
             return acc
 
+    def executeForMingw(self):
+        print("Execution...", end='')
+
+        exeFile = os.path.join("./Predictor.exe")
+        args = [exeFile, self.algo, self.version, self.datasetType]
+
+        logFile = os.path.join(self.outputDir, "exec.txt")
+        with open(logFile, 'w') as file:
+            process = subprocess.call(args, stdout=file)
+
+        if process == 1:
+            print("FAILED!!\n")
+            return None
+        else:
+            print("success")
+            acc = self.readStatsFile()
+            return acc
+
     def execute(self):
         if Util.windows():
-            return self.executeForWindows()
+            if Common.mingw:
+                return self.executeForMingw()
+            else:
+                return self.executeForWindows()
         else:
             return self.executeForLinux()
 
