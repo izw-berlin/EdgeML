@@ -10,8 +10,11 @@ from edgeml_tf.graph.bonsai import Bonsai
 
 
 def main():
+    # fix for TF 2
+    tf.compat.v1.disable_eager_execution()
+
     # Fixing seeds for reproducibility
-    tf.set_random_seed(42)
+    tf.compat.v1.set_random_seed(42)
     np.random.seed(42)
 
     # Hyper Param pre-processing
@@ -68,8 +71,8 @@ def main():
     if numClasses == 2:
         numClasses = 1
 
-    X = tf.placeholder("float32", [None, dataDimension])
-    Y = tf.placeholder("float32", [None, numClasses])
+    X = tf.compat.v1.placeholder("float32", [None, dataDimension])
+    Y = tf.compat.v1.placeholder("float32", [None, numClasses])
 
     currDir = helpermethods.createTimeStampDir(dataDir)
 
@@ -85,9 +88,9 @@ def main():
                                   sparW, sparT, sparV, sparZ,
                                   learningRate, X, Y, useMCHLoss, outFile)
 
-    sess = tf.InteractiveSession()
+    sess = tf.compat.v1.InteractiveSession()
 
-    sess.run(tf.global_variables_initializer())
+    sess.run(tf.compat.v1.global_variables_initializer())
 
     bonsaiTrainer.train(batchSize, totalEpochs, sess,
                         Xtrain, Xtest, Ytrain, Ytest, dataDir, currDir)

@@ -60,28 +60,28 @@ class Bonsai:
 
     def initZ(self, Z):
         if Z is None:
-            Z = tf.random_normal(
+            Z = tf.compat.v1.random_normal(
                 [self.projectionDimension, self.dataDimension])
         Z = tf.Variable(Z, name='Z', dtype=tf.float32)
         return Z
 
     def initW(self, W):
         if W is None:
-            W = tf.random_normal(
+            W = tf.compat.v1.random_normal(
                 [self.numClasses * self.totalNodes, self.projectionDimension])
         W = tf.Variable(W, name='W', dtype=tf.float32)
         return W
 
     def initV(self, V):
         if V is None:
-            V = tf.random_normal(
+            V = tf.compat.v1.random_normal(
                 [self.numClasses * self.totalNodes, self.projectionDimension])
         V = tf.Variable(V, name='V', dtype=tf.float32)
         return V
 
     def initT(self, T):
         if T is None:
-            T = tf.random_normal(
+            T = tf.compat.v1.random_normal(
                 [self.internalNodes, self.projectionDimension])
         T = tf.Variable(T, name='T', dtype=tf.float32)
         return T
