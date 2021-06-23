@@ -83,7 +83,7 @@ class MainDriver:
                 Common.msbuildPathOptions))
 
     def run(self):
-        if Util.windows():
+        if Util.windows() and (not Common.mingw):
             self.checkMSBuildPath()
 
         algo, version, trainingInput, testingInput, modelDir = self.args.algo, Common.Version.Fixed, self.args.train, self.args.test, self.args.model

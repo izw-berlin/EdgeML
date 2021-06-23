@@ -344,6 +344,11 @@ class MainDriver:
         parser.add_argument("--tempdir", metavar='', help="Scratch directory")
         parser.add_argument("-o", "--outdir", metavar='',
                             help="Directory to output the generated Arduino sketch")
+        # additional arguments for MingW-compiler
+        parser.add_argument("--mingw", action="store_true",
+                            help="Use MingW with makefle as toolchain")
+        parser.add:argument("--gcc",
+                            "Path to bin-dir of mingw")
 
         self.args = parser.parse_args()
 
@@ -368,7 +373,10 @@ class MainDriver:
         else:
             Common.outdir = os.path.join(Common.tempdir, "arduino")
             os.makedirs(Common.outdir, exist_ok=True)
-
+        # additional arguments for MingW-compiler
+        Common.mingw = self.args.mingw
+        Common.gccPath = self.args.gcc
+        
     def checkMSBuildPath(self):
         found = False
         for path in Common.msbuildPathOptions:
@@ -381,7 +389,7 @@ class MainDriver:
                 Common.msbuildPathOptions))
 
     def run(self):
-        if Util.windows():
+        if Util.windows() and (not Common.mingw):
             self.checkMSBuildPath()
 
         algo, trainingInput, testingInput, modelDir = self.args.algo, self.args.train, self.args.test, self.args.model
